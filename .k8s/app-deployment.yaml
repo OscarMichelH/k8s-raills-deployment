@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - args:
+            - rails
+            - s
+            - -p
+            - "3000"
+            - -b
+            - 0.0.0.0
+          command:
+            - dev-entrypoint.sh
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_PASSWORD
+                  name: env-secrets
+            - name: DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_PORT
+                  name: env-secrets
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_URL
+                  name: env-secrets
+            - name: DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USER
+                  name: env-secrets
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_DB
+                  name: env-secrets
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: env-secrets
+            - name: RACK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: RACK_ENV
+                  name: env-secrets
+            - name: RAILS_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: RAILS_ENV
+                  name: env-secrets
+            - name: RAILS_LOG_TO_STDOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: RAILS_LOG_TO_STDOUT
+                  name: env-secrets
+            - name: RAILS_SERVE_STATIC_FILES
+              valueFrom:
+                configMapKeyRef:
+                  key: RAILS_SERVE_STATIC_FILES
+                  name: env-secrets
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                configMapKeyRef:
+                  key: SECRET_KEY_BASE
+                  name: env-secrets
+            - name: SMTP_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: SMTP_USERNAME
+                  name: env-secrets
+            - name: SMTP_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: SMTP_PASSWORD
+                  name: env-secrets
+            - name: SMTP_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: SMTP_SERVER
+                  name: env-secrets
+          image: <YOUR_DOCKER_IMAGE>
+          name: <YOUR_APP_NAME>
+          ports:
+            - containerPort: 3000
+          resources: {}
+          stdin: true
+          tty: true
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+status: {}
