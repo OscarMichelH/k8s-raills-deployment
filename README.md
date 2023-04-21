@@ -62,7 +62,9 @@ volumes:
 
 services:
   db:
-    image: postgres:15.1-alpine
+    image: postgres:alpine
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
     env_file:
       - config/application.yml
     volumes:
@@ -85,7 +87,9 @@ services:
     tty: true
     env_file:
       - config/application.yml
-    entrypoint: entrypoint.sh
+    environment:
+      RAILS_ENV: production
+    entrypoint: ["/docker-entrypoint.sh"]
     command: ['rails', 's', '-p', '3000', '-b', '0.0.0.0']
 ```
 Note: Because I'm using figaro gem to handle ENV vars, I'm setting directly config/application.yml as secrets file, but feel free to put environments directly inside docker-compose file or use the next example as reference:
@@ -120,6 +124,10 @@ bundle check || bundle install
 
 # remove any existing PID
 rm -f  $APP_PATH/tmp/pids/server.pid
+
+rake db:create
+rake db:migrate
+rake assets:precompile
 
 # run anythin by prepending bundle exec to the passed command
 bundle exec ${@}
